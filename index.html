@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emerald Proxy Site</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: radial-gradient(circle at center, #2b0044, #000);
+        animation: bgGlow 6s infinite alternate;
+        color: white;
+        text-align: center;
+        padding: 50px;
+        margin: 0;
+    }
+    @keyframes bgGlow {
+        0% { background: radial-gradient(circle at center, #3b0066, #000); }
+        50% { background: radial-gradient(circle at center, #4a0080, #000); }
+        100% { background: radial-gradient(circle at center, #3b0066, #000); }
+    }
+    .container {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 0px 15px rgba(138, 43, 226, 0.6);
+        width: 80%;
+        max-width: 600px;
+        margin: auto;
+    }
+    h1 {
+        color: #00ff00;
+        text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00;
+    }
+    button {
+        background-color: #000;
+        color: #8a2be2;
+        padding: 15px 32px;
+        font-size: 16px;
+        border: 2px solid #8a2be2;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 15px #8a2be2;
+        animation: buttonGlow 1.5s infinite alternate;
+        text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2;
+    }
+    @keyframes buttonGlow {
+        from { box-shadow: 0 0 10px #8a2be2; }
+        to { box-shadow: 0 0 25px #8a2be2; }
+    }
+    button:hover {
+        transform: scale(1.05);
+    }
+    input[type="text"] {
+        padding: 10px;
+        margin: 10px;
+        font-size: 16px;
+        border-radius: 5px;
+        width: 80%;
+        text-align: center;
+        border: 2px solid #8a2be2;
+        box-shadow: 0 0 10px #8a2be2;
+        background-color: black;
+        color: white;
+    }
+    .report-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        box-shadow: 0 0 15px red;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Emerald Proxy Site</h1>
+
+    <input type="text" id="proxyKey" placeholder="Masukkan Key" />
+    <button onclick="verifyKey()">Submit Key</button>
+    <p id="errorMessage" style="color:red; display:none;">Key salah atau sudah dipakai, coba lagi.</p>
+
+    <br><br>
+    <button onclick="openWhatsapp()">Buy Proxy</button>
+    <button onclick="alert('Price Proxy: 10 Diamond Lock')">Price Proxy: 10 Diamond Lock</button>
+    <button class="report-btn" onclick="reportProblem()">Report Problem</button>
+
+    <div class="footer">
+        <p>Support PC and Android</p>
+    </div>
+</div>
+
+<script>
+function verifyKey() {
+    const key = document.getElementById('proxyKey').value.trim();
+    fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect;
+        } else {
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    });
+}
+function openWhatsapp() {
+    window.open('https://wa.me/6288971012907', '_blank');
+}
+function reportProblem() {
+    window.open('https://wa.me/6288971012907?text=Halo%20Admin,%20saya%20mau%20melaporkan%20masalah.', '_blank');
+}
+</script>
+
+</body>
+</html>
