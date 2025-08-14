@@ -14,28 +14,15 @@
             padding: 50px;
             margin: 0;
         }
-
         @keyframes bgGlow {
             0% { background: radial-gradient(circle at center, #3b0066, #000); }
             50% { background: radial-gradient(circle at center, #4a0080, #000); }
             100% { background: radial-gradient(circle at center, #3b0066, #000); }
         }
-
-        .container {
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 15px rgba(138, 43, 226, 0.6);
-            width: 80%;
-            max-width: 600px;
-            margin: auto;
-        }
-
         h1 {
-            color: #00ff00;
-            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00;
+            color: #00ff66;
+            text-shadow: 0 0 10px #00ff66, 0 0 20px #00ff66, 0 0 40px #00ff66;
         }
-
         button {
             background-color: #000;
             color: #8a2be2;
@@ -50,16 +37,11 @@
             animation: buttonGlow 1.5s infinite alternate;
             text-shadow: 0 0 10px #8a2be2, 0 0 20px #8a2be2;
         }
-
         @keyframes buttonGlow {
             from { box-shadow: 0 0 10px #8a2be2; }
             to { box-shadow: 0 0 25px #8a2be2; }
         }
-
-        button:hover {
-            transform: scale(1.05);
-        }
-
+        button:hover { transform: scale(1.05); }
         input[type="text"] {
             padding: 10px;
             margin: 10px;
@@ -72,151 +54,52 @@
             background-color: black;
             color: white;
         }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #888;
-        }
-
-        #adminPanel {
-            margin-top: 20px;
-            display: none;
-        }
-
-        #keyList {
-            margin-top: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        /* Tombol kecil admin */
-        #adminBtn {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: transparent;
-            border: 2px solid #8a2be2;
-            color: #8a2be2;
-            padding: 5px 8px;
-            font-size: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            box-shadow: 0 0 8px #8a2be2;
-            transition: 0.3s;
-            z-index: 999;
-            text-shadow: 0 0 5px #8a2be2, 0 0 10px #8a2be2;
-        }
-        #adminBtn:hover {
-            background-color: #8a2be2;
+        #errorMessage { color: red; display: none; }
+        #successMessage { color: lime; display: none; }
+        #reportBtn {
+            background-color: red;
             color: white;
-        }
-
-        /* Tombol Report Problem merah full */
-        .report-btn {
-            background-color: red !important;
-            color: white !important;
-            border: 2px solid red !important;
-            box-shadow: 0 0 15px red !important;
-            text-shadow: none !important;
-        }
-
-        .report-btn:hover {
-            background-color: darkred !important;
-            border-color: darkred !important;
+            border: none;
         }
     </style>
 </head>
 <body>
-
-    <!-- Tombol kecil admin -->
-    <button id="adminBtn" onclick="showAdminLogin()">⚙</button>
-
-    <div class="container">
-        <h1>Emerald Proxy Site</h1>
-
-        <input type="text" id="proxyKey" placeholder="Masukkan Key" />
-
-        <button onclick="verifyKey()">Submit Key</button>
-
-        <p id="errorMessage" style="color:red; display:none;">Key salah atau sudah dipakai, coba lagi.</p>
-
-        <br><br>
-
-        <button onclick="openWhatsapp()">Buy Proxy</button>
-        <button onclick="showPrice()">Price Proxy: 10 Diamond Lock</button>
-        <button class="report-btn" onclick="reportProblem()">Report Problem</button>
-
-        <div class="footer">
-            <p>Support PC and Android</p>
-        </div>
-
-        <!-- Panel Admin -->
-        <div id="adminPanel">
-            <h3>Panel Admin</h3>
-            <button onclick="generateKey()">Generate Key Baru</button>
-            <div id="keyList"></div>
-        </div>
-    </div>
+    <h1>Emerald Proxy Site</h1>
+    <input type="text" id="proxyKey" placeholder="Masukkan Key" />
+    <button onclick="verifyKey()">Submit Key</button>
+    <p id="errorMessage">Key salah atau sudah dipakai.</p>
+    <p id="successMessage">Key benar! Mengalihkan...</p>
+    <br><br>
+    <button onclick="openWhatsapp()">Buy Proxy</button>
+    <button onclick="alert('Price Proxy: 10 Diamond Lock')">Price Proxy: 10 Diamond Lock</button>
+    <button id="reportBtn" onclick="reportProblem()">Report Problem</button>
 
     <script>
-        let validKeys = ["XZ12A9", "QWERT1", "PLM9OK", "ZXCVBN", "ASDF12"];
-        let adminPassword = "admin123"; // password untuk panel admin
-
-        function showAdminLogin() {
-            let pass = prompt("Masukkan password admin:");
-            if (pass === adminPassword) {
-                document.getElementById("adminPanel").style.display = "block";
-                updateKeyList();
-            } else if (pass !== null && pass !== "") {
-                alert("Password salah!");
-            }
-        }
-
-        function verifyKey() {
-            let key = document.getElementById('proxyKey').value.trim();
-            let errorMessage = document.getElementById('errorMessage');
-
-            if (validKeys.includes(key)) {
-                validKeys = validKeys.filter(k => k !== key); // hapus key setelah dipakai
-                updateKeyList();
-                window.location.href = "https://whatsapp.com/channel/0029Vb6TkoR1NCrRuEbl4f11"; // ganti link tujuan
+        async function verifyKey() {
+            const key = document.getElementById('proxyKey').value.trim();
+            const res = await fetch('/api/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
+                setTimeout(() => {
+                    window.location.href = "https://example.com";
+                }, 1000);
             } else {
-                errorMessage.style.display = "block";
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
             }
         }
-
-        function generateKey() {
-            let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let newKey = "";
-            for (let i = 0; i < 6; i++) {
-                newKey += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-            validKeys.push(newKey);
-            updateKeyList();
-            alert("Key baru dibuat: " + newKey);
-        }
-
-        function updateKeyList() {
-            let list = document.getElementById("keyList");
-            list.innerHTML = "<strong>Key Aktif:</strong><br>" + validKeys.join("<br>");
-        }
-
         function openWhatsapp() {
-            let whatsappLink = "https://wa.me/6288971012907";
-            window.open(whatsappLink, "_blank");
+            window.open("https://wa.me/6288971012907", "_blank");
         }
-
-        function showPrice() {
-            alert("Harga Proxy adalah 10 Diamond Lock.");
-        }
-
         function reportProblem() {
-            let whatsappLink = "https://wa.me/6288971012907?text=Halo%20Admin,%20saya%20ingin%20melaporkan%20masalah.";
-            window.open(whatsappLink, "_blank");
+            window.open("https://wa.me/6288971012907?text=Halo%20Admin,%20saya%20ingin%20melaporkan%20masalah", "_blank");
         }
     </script>
-
 </body>
 </html>
